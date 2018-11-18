@@ -44,6 +44,7 @@ export default {
     this.loadChapter(this.$_chapters[this.currentChapter])
   },
   mounted() {
+    this.$_body = document.getElementsByTagName('body')[0]
     this.setProgress()
   },
   computed: {
@@ -75,6 +76,7 @@ export default {
     },
     setProgress() {
       this.$refs.progress.style.width = parseInt( (this.currentImg + 1) / this.imgs.length * 100) + "vw"
+      this.$_body.scrollBy(1080, 0)
     }
   },
   watch:{
