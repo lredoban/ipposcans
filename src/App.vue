@@ -1,14 +1,15 @@
 <template>
   <div id="app">
-    <img 
-      :src="imgSrc"
-      alt="show me love">
-    <div class="buttons">
+    <div id="img-wrapper" :class="{infos: showInfos}" @click="menuIsOpen = !menuIsOpen">
+      <img 
+        :src="imgSrc"
+        alt="show me love">
+    </div>
+    <div class="buttons" :class="{infos: showInfos}">
       <button class="btn" @click="prev">Prev</button>
       <button class="btn" @click="next">Next</button>
     </div>
     <div id="menu" :class="{open: menuIsOpen}">
-      <div class="menu-toggle" @click="menuIsOpen = !menuIsOpen">{{menuIsOpen ? "🐵" : "🙈"}}</div>
       <button class="btn" @click="currentChapter++">Next Chapter</button>
       <div class="menu-select">
         Choose a chapter:
@@ -36,7 +37,8 @@ export default {
       currentChapter: parseInt(localStorage.currentChapter) || 0,
       currentImg: parseInt(localStorage.currentImg) || 0,
       imgs: [],
-      menuIsOpen: false
+      menuIsOpen: false,
+      showInfos: false
     }
   },
   created() {
@@ -46,6 +48,10 @@ export default {
   mounted() {
     this.$_body = document.getElementsByTagName('body')[0]
     this.setProgress()
+    if (this.currentImg === 0 && this.currentChapter === 0) {
+      this.showInfos = true
+      setTimeout(() => { this.showInfos = false }, 5000)
+    }
   },
   computed: {
     imgSrc() {
@@ -85,6 +91,7 @@ export default {
       this.loadChapter(this.$_chapters[this.currentChapter])
       localStorage.currentChapter = this.currentChapter
       this.menuIsOpen = false
+      this.$_body.scrollBy(1080, 0)
     },
     currentImg() {
       localStorage.currentImg = this.currentImg
@@ -122,20 +129,46 @@ a {
 }
 #app .buttons{
   position: fixed;
-  bottom: 1rem;
-  padding: 1rem;
+  bottom: 0;
+  height: 14vh;
   display: flex;
-  justify-content: space-around;
   width: 100vw;
 }
 .buttons button{
-  opacity: 0.4;
+  opacity: 0;
+  flex: 50%;
+  transition: opacity 0.5s ease;
+  font-size: 2rem;
+  font-weight: 900;
+}
+.buttons.infos button {
+  opacity: 0.4
 }
 .buttons button:last-child{
   right: 0;
 }
 img {
   height: 100%;
+}
+#img-wrapper {
+  height: 100vh;
+}
+#img-wrapper::before {
+  content: "Click in this area to open/close the menu";
+  position: fixed;
+  top: 0;
+  bottom: 14vh;
+  background-color: #BADA55;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+#img-wrapper.infos::before {
+  opacity: 0.8;
 }
 #menu {
   position: fixed;
@@ -150,14 +183,6 @@ img {
 }
 #menu.open {
   transform: translateY(-100%);
-}
-.menu-toggle {
-  cursor: pointer;
-  position: absolute;
-  top: -33px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.6rem;
 }
 .menu-credit {
   margin-bottom: 0.3rem;
