@@ -21,6 +21,7 @@
         <small>Made with <a href="https://www.buymeacoffee.com/Lova" target="_blank">🥜</a> by Side <a href="https://lovasoa.fr" target="_blank">🐯</a></small>
       </div>
     </div>
+    <div id="progress" ref="progress"></div>
   </div>
 </template>
 
@@ -32,8 +33,8 @@ export default {
   data: () => {
     return {
       baseUrl: 'http://vf-scan.com/mangas/hajime-no-ippo',
-      currentChapter: localStorage.currentChapter || 0,
-      currentImg: localStorage.currentImg || 0,
+      currentChapter: parseInt(localStorage.currentChapter) || 0,
+      currentImg: parseInt(localStorage.currentImg) || 0,
       imgs: [],
       menuIsOpen: false
     }
@@ -41,6 +42,9 @@ export default {
   created() {
     this.$_chapters = chapters
     this.loadChapter(this.$_chapters[this.currentChapter])
+  },
+  mounted() {
+    this.setProgress()
   },
   computed: {
     imgSrc() {
@@ -68,6 +72,9 @@ export default {
       if (this.imgs.length - 1 === this.currentImg) {
         this.menuIsOpen = true
       }
+    },
+    setProgress() {
+      this.$refs.progress.style.width = parseInt( (this.currentImg + 1) / this.imgs.length * 100) + "vw"
     }
   },
   watch:{
@@ -77,8 +84,9 @@ export default {
       localStorage.currentChapter = this.currentChapter
       this.menuIsOpen = false
     },
-    currentImg(){
+    currentImg() {
       localStorage.currentImg = this.currentImg
+      this.setProgress()
     }
   }
 }
@@ -154,5 +162,13 @@ img {
 }
 .menu-select {
   margin: 1rem 0;
+}
+#progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0vw;
+  background-color: rgba(240, 128, 128, 0.4);
 }
 </style>
