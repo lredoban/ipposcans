@@ -32,8 +32,8 @@ export default {
   data: () => {
     return {
       baseUrl: 'http://vf-scan.com/mangas/hajime-no-ippo',
-      currentChapter: 0,
-      currentImg: -1,
+      currentChapter: localStorage.currentChapter || 0,
+      currentImg: localStorage.currentImg || 0,
       imgs: [],
       menuIsOpen: false
     }
@@ -41,7 +41,6 @@ export default {
   created() {
     this.$_chapters = chapters
     this.loadChapter(this.$_chapters[this.currentChapter])
-    this.currentImg = 0
   },
   computed: {
     imgSrc() {
@@ -75,7 +74,11 @@ export default {
     currentChapter() {
       this.currentImg = 0
       this.loadChapter(this.$_chapters[this.currentChapter])
+      localStorage.currentChapter = this.currentChapter
       this.menuIsOpen = false
+    },
+    currentImg(){
+      localStorage.currentImg = this.currentImg
     }
   }
 }
