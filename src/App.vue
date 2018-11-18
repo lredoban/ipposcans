@@ -13,13 +13,14 @@
       <button class="btn" @click="currentChapter++">Next Chapter</button>
       <div class="menu-select">
         Choose a chapter:
-        <select v-model="currentChapter">
+        <label for="chapter"></label>
+        <select v-model="currentChapter" id="chapter">
           <option disabled value="">Choisissez</option>
           <option v-for="chapter in $_chapters" :key="chapter.name" :value="chapter.name - 1">{{chapter.name}}</option>
         </select>
       </div>
       <div class="menu-credit">
-        <small>Made with <a href="https://www.buymeacoffee.com/Lova" target="_blank">🥜</a> by Side <a href="https://lovasoa.fr" target="_blank">🐯</a></small>
+        <small>Made with <a href="https://www.buymeacoffee.com/Lova" target="_blank" rel="noopener">🥜</a> by Side <a href="https://lovasoa.fr" target="_blank" rel="noopener">🐯</a></small>
       </div>
     </div>
     <div id="progress" ref="progress"></div>
@@ -33,7 +34,7 @@ export default {
   name: 'app',
   data: () => {
     return {
-      baseUrl: 'http://vf-scan.com/mangas/hajime-no-ippo',
+      baseUrl: 'https://vf-scan.com/mangas/hajime-no-ippo',
       currentChapter: parseInt(localStorage.currentChapter) || 0,
       currentImg: parseInt(localStorage.currentImg) || 0,
       imgs: [],
@@ -130,7 +131,7 @@ a {
 #app .buttons{
   position: fixed;
   bottom: 0;
-  height: 14vh;
+  height: 36vh;
   display: flex;
   width: 100vw;
 }
@@ -157,7 +158,7 @@ img {
   content: "Click in this area to open/close the menu";
   position: fixed;
   top: 0;
-  bottom: 14vh;
+  bottom: 36vh;
   background-color: #BADA55;
   display: flex;
   justify-content: center;
