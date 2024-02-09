@@ -87,6 +87,16 @@ export default {
         img.src = `${this.baseUrl}/${chapter.name}/${page}.jpg`;
         return img;
       });
+      this.preloadNextImages(+chapter.name)
+    },
+    preloadNextImages(index) {
+      for (let i = index; i < index + 10; i++) {
+        if (!this.$_chapters[i]) break;
+        this.$_chapters[i].pages.map(page => {
+          const src = `${this.baseUrl}/${this.$_chapters[i].name}/${page}.jpg`
+          new Image().src = src;
+        })
+      }
     },
     prev() {
       this.currentImg =
