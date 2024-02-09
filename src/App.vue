@@ -8,25 +8,35 @@
       <button class="btn" @click="next">Next</button>
     </div>
     <div id="menu" :class="{open: menuIsOpen}">
-      <button class="btn" @click="currentChapter++">Next Chapter</button>
-      <div class="menu-select">
-        Choose a chapter:
-        <label for="chapter"></label>
-        <select v-model="currentChapter" id="chapter">
-          <option disabled value>Choisissez</option>
-          <option
-            v-for="chapter in $_chapters"
-            :key="chapter.name"
-            :value="chapter.name - 1"
-          >{{chapter.name}}</option>
-        </select>
+      <div v-if="!baseUrl">
+        <form id="baseUrlForm" @submit.prevent="saveBaseUrl">
+          <label for="baseUrl">Add a base url</label>
+          <input type="text" name="baseUrl" id="baseUrl">
+          <button type="submit">Save</button>
+        </form>
       </div>
-      <div class="menu-credit">
-        <small>Made with
-          <a href="https://www.buymeacoffee.com/Lova" target="_blank" rel="noopener">🥜</a> by Lova
-          <a href="https://lovasoa.fr" target="_blank" rel="noopener">🐯</a>
-        </small>
-      </div>
+      <template v-else>
+        <button class="btn" @click="currentChapter++">Next Chapter</button>
+        <div class="menu-select">
+          Choose a chapter:
+          <label for="chapter"></label>
+          <select v-model="currentChapter" id="chapter">
+            <option disabled value>Choisissez</option>
+            <option
+              v-for="chapter in $_chapters"
+              :key="chapter.name"
+              :value="chapter.name - 1"
+            >{{chapter.name}}</option>
+          </select>
+        </div>
+        <button @click="clearBaseUrl">Clear Base Url</button>
+        <div class="menu-credit">
+          <small v->Made with
+            <a href="https://www.buymeacoffee.com/Lova" target="_blank" rel="noopener">🥜</a> by Lova
+            <a href="https://lovasoa.fr" target="_blank" rel="noopener">🐯</a>
+          </small>
+        </div>
+      </template>
     </div>
     <div id="progress" ref="progress"></div>
   </div>
@@ -39,7 +49,7 @@ export default {
   name: "app",
   data: () => {
     return {
-      baseUrl: "https://vf-scan.com/mangas/hajime-no-ippo",
+      baseUrl: localStorage.baseUrl || "",
       currentChapter: parseInt(localStorage.currentChapter) || 0,
       currentImg: parseInt(localStorage.currentImg) || 0,
       imgs: [],
@@ -93,9 +103,18 @@ export default {
       this.$refs.progress.style.width =
         parseInt(((this.currentImg + 1) / this.imgs.length) * 100) + "vw";
       this.$_body.scrollBy(1080, 0);
+    },
+    saveBaseUrl() {
+      this.baseUrl = baseUrlForm.baseUrl.value
+    },
+    clearBaseUrl() {
+      this.baseUrl = ''
     }
   },
   watch: {
+    baseUrl(value) {
+      localStorage.baseUrl = value
+    },
     currentChapter() {
       this.currentImg = 0;
       this.loadChapter(this.$_chapters[this.currentChapter]);
@@ -194,6 +213,9 @@ img {
 }
 #menu.open {
   transform: translateY(-100%);
+}
+#menu > * {
+  min-height: 3rem;
 }
 .menu-credit {
   margin-bottom: 0.3rem;

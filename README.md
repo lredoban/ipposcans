@@ -1,5 +1,14 @@
 # ipposcans
 
+Genesis: This project started at working during a number two pause. I couldn't read my favorite manga because of low/no connection. So I decided to create a PWA of my own to learn about this tech and read offline.
+
+Now you have to bring your own base url where we can find image:
+```
+img.src = `${this.baseUrl}/${chapter.name}/${page}.jpg`;
+```
+
+As of 09/02/2024 this app now 1447 chapters
+
 ## Project setup
 ```
 yarn install
