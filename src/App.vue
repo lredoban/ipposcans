@@ -31,7 +31,7 @@
         </div>
         <button @click="clearBaseUrl">Clear Base Url</button>
         <div class="menu-credit">
-          <small v->Made with
+          <small>Made with
             <a href="https://www.buymeacoffee.com/Lova" target="_blank" rel="noopener">🥜</a> by Lova
             <a href="https://lovasoa.fr" target="_blank" rel="noopener">🐯</a>
           </small>
@@ -99,20 +99,23 @@ export default {
       }
     },
     prev() {
-      this.currentImg =
-        this.currentImg <= 0 ? this.currentImg : this.currentImg - 1;
+      if (this.currentImg <= 0) {
+        this.currentChapter--
+        this.$nextTick(() => this.currentImg = this.imgs.length - 1)
+      }
+      else 
+      this.currentImg = this.currentImg - 1;
     },
     next() {
-      if (this.currentImg >= this.imgs.length - 1) return;
-      this.currentImg++;
-      if (this.imgs.length - 1 === this.currentImg) {
-        this.menuIsOpen = true;
-      }
+      if (this.currentImg >= this.imgs.length - 1) {
+        this.currentChapter++
+      } else 
+        this.currentImg++;
     },
     setProgress() {
       this.$refs.progress.style.width =
         parseInt(((this.currentImg + 1) / this.imgs.length) * 100) + "vw";
-      this.$_body.scrollBy(1080, 0);
+      this.$nextTick(() => this.$_body.scrollBy(9999, 0))
     },
     saveBaseUrl() {
       this.baseUrl = baseUrlForm.baseUrl.value
@@ -130,7 +133,6 @@ export default {
       this.loadChapter(this.$_chapters[this.currentChapter]);
       localStorage.currentChapter = this.currentChapter;
       this.menuIsOpen = false;
-      this.$_body.scrollBy(1080, 0);
     },
     currentImg() {
       localStorage.currentImg = this.currentImg;
@@ -212,7 +214,7 @@ img {
 }
 #menu {
   position: fixed;
-  top: 100vh;
+  top: 100%;
   width: 100vw;
   background-color: #f1e7e7;
   transition: transform 0.4s ease-out;
