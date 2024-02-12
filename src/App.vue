@@ -44,6 +44,7 @@
 
 <script>
 import { chapters } from "../public/hajime-no-ippo.json";
+import { useDeviceMotion } from '@vueuse/core'
 
 export default {
   name: "app",
@@ -54,7 +55,8 @@ export default {
       currentImg: parseInt(localStorage.currentImg) || 0,
       imgs: [],
       menuIsOpen: false,
-      showInfos: false
+      showInfos: false,
+      rotationRate: null
     };
   },
   created() {
@@ -64,6 +66,7 @@ export default {
   mounted() {
     this.$_body = document.getElementsByTagName("body")[0];
     this.setProgress();
+    this.rotationRate = useDeviceMotion().rotationRate
     if (this.currentImg === 0 && this.currentChapter === 0) {
       this.showInfos = true;
       setTimeout(() => {
@@ -75,6 +78,9 @@ export default {
     imgSrc() {
       if (!this.imgs.length || this.currentImg === -1) return "";
       return this.imgs[this.currentImg].src;
+    },
+    alpha() {
+      return this.rotationRate ? Math.round(this.rotationRate.alpha) : 0
     }
   },
   methods: {
@@ -125,6 +131,18 @@ export default {
     }
   },
   watch: {
+    alpha(alpha) {
+      const minAlpha = 10
+      const maxAlpha = 25
+      const threshold = 15
+
+      if (Math.abs(alpha) > minAlpha) {
+        const max = document.getElementsByTagName('body')[0].clientWidth - document.getElementsByTagName('body')[0].scrollWidth
+        const offset = alpha * max / threshold / maxAlpha
+        const currentScroll = document.getElementsByTagName('body')[0].scrollLeft
+        document.getElementsByTagName('body')[0].scrollLeft = currentScroll + offset
+      }
+    },
     baseUrl(value) {
       localStorage.baseUrl = value
     },
